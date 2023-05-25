@@ -1,6 +1,23 @@
 23-react1 최서진
 ===============================================
 
+2023년 5월 25일 (13주차)
+
+1. useContext
+   -useContext() 혹은 React.createContext() 함수 호출로 생성된 컨텍스트 객체를 인자로 받아서 현재 컨텍스트읠 값을 리턴합니다
+
+      function MyComponent(props) {
+         const value = useContest(MyContext);
+         
+         return(
+            ...
+         )
+      }
+
+
+===============================================
+
+
 2023년 5월 18일 (12주차)
 
 1. 컨텍스트 API
