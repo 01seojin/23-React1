@@ -2,36 +2,150 @@
 ===============================================
 
 
+2023년 5월 18일 (12주차)
+
+1. 컨텍스트 API
+
+   (1)React.createContext 
+      -컨텍스트를 생성하기 위한 함수 
+      -파라메타에는 기본값 삽입 
+      -하위 컴포넌트는 가장 가까운 상위 레벨의 Provider부터 컨텍스트를 받게 되지만, 
+      만일 Provider를 찾을 수 없다면 위에서 설장한 기본값을 사용하게 됨
+
+   (2)Context.Provider 
+      -Context.Provider 컴포넌트르 하위 컴포넌트를 감싸주면 모든 하위 컴포넌트들이 해당 컨텍스트에 접근 가능 
+      -하위 컴포넌트를 consumer 컴포넌트라 부름
+
+   (3)Class.contextType 
+      -Provider 하위에 있는 클래스 컴포넌트에서 컨텍스트의 데이터에 접근하기 위해 사용 
+      -Class 컴포넌트는 더 이상 사용하지 않음
+
+   (4)Context.Consumer 
+      -함수형 컴포넌트에서 Context.Consumer를 사용하여 컨텍스트를 구독 
+      -컴포넌트의 자식으로 함수가 올 수 있는데 이것을 function as a child 라고 함
+
+   (5)Context.displayName 
+      -컨텍스트 객체는 displayName이라는 문자열 속성을 갖음
+
+
+
+2. 컨텍스트를 사용하기 전에 고려할 점
+
+   -컨텍스트는 다른 레벨의 많은 컴포넌트가 특정 데이터를 필요로 하는경우에 사용 
+   -컨텍스트를 사용하는 것이 무조건 좋은 것X (컴포넌트와 컨텍스트가 연동되면 재사용성이 떨어지기 때문) 
+   -데이터가 많아질수록 상위 컴포넌트는 복잡 
+   -컨텍스트를 사용하려면 컴포넌트의 상위 컴포넌트에서 Provider로 감싸주어야 함
+
+3. 컨텍스트란?
+
+   -기존의 일반적인 리액트에서는 데이터가 컴포넌트의 props를 통해 부모에서 자식을 단방향 전달 
+   -컨텍스트는 리액트 컴포넌트들 사이에서 데이터를 기존의 props를 통해 전달하는 방식 대신 컴포넌트 트리를 통해 곧바로 컴포넌트에 전달하는 새로운 방식을 제공 
+   -컨텍스트를 사용하면 일일이 props로 전달할 필요 없이 데이터를 필요로 하는 컴포넌트에 바로 전달 가능
+
+
+===============================================
+
+
+2023년 5월 11일 (11주차)
+
+
+Calculator.jsx import React, { useState} from "react";
+import TemperatureInput from "./TemperatureInput";
+
+function BoilingVerdict(props) { if(props.celsius >= 100) { return
+
+물이 끓습니다.
+
+}
+return <p>물이 끓지 않습니다.</p>
+}
+
+function toCelsius(fahrenheit) { return((fahrenheit - 32) * 5) / 9 ; }
+
+function toFahrenheit(celsius) { return (celsius * 9 ) / 5 + 32; }
+
+function tryConvert(temperature, convert) { const input = parseFloat(temperature);
+if(Number.isNaN(input)) { return "" } const output = convert(input); 
+const rounded = Math.round(output * 1000) / 1000; 
+return rounded.toString(); }
+
+function Calculator(props) { const [temperature, setTemperature] = useState("");
+const [scale, setScale] = useState("c");
+
+const handleCelsiusChange = (temperature) => {
+    setTemperature(temperature);
+    setScale("c");
+};
+
+const handleFahrenheitChange = (temperature) => {
+    setTemperature(temperature);
+    setScale("f");
+};
+
+const celsius = 
+    scale === "f" ? tryConvert(temperature, toCelsius) : temperature;
+    const fahrenheit = 
+    scale === "c" ? tryConvert(temperature, toFahrenheit) : temperature;    
+
+    return (
+        <div>
+                <TemperatureInput
+                scale="c"
+                temperature={celsius}
+                onTemperatureChange={handleCelsiusChange}
+                />
+                <TemperatureInput
+                scale="f"
+                temperature={fahrenheit}
+                onTemperatureChange={handleFahrenheitChange}
+                />
+                <BoilingVerdict celsius={parseFloat(celsius)}/>
+        </div>
+    );
+}
+
+export default Calculator; TemperatureInput.jsx const scaleNames = { c: "섭씨", f: "화씨", };
+
+function TemperatureInput(props) { const handleChange = (event) => { props.onTemperatureChange(event.target.value) };
+
+return (
+
+온도를 입력해주세요.(단위: {scaleNames[props.scale]});
+);
+}
+
+export default TemperatureInput;   
+
+
+===============================================
+
+
+
 2023년 5월 4일 (10주차)
 
-1. 리스트와 키란 무엇인가?
+1. 리스트와 키란 무엇인가? 
    -리스크는 JS의 변수나 객체를 하나의 변수로 묶어 놓은 배열과 같은 것 
-   -키는 각 객체나 아이템을 구분할 수 있는 고유한 값을 의미 
+   -키는 각 객체나 아이템을 구분할 수 있는 고유한 값을 의미
    -리액트에서는 배열과 키를 사용하는 반복되는 다수의 엘리먼트를 쉽게 렌더링 할 수 있음
 
 
-2. 여러 개의 컴포넌트 렌더링 하기
-   여러개의 같은 컴포넌트를 화면에 반복적으로 나타내야 할 경우, 배열에 들어있는 엘리먼트를 map()함수를 이용하여 렌더링함
-
-3. 리스트의 키 
+2. 리스트의 키 
    -리스트에서의 키는 리스트에서 아이템을 구별하기 위한 고유한 문자열 
    -이 키는 리스트에서 어떤 아이템이 변경, 추가 또는 제거되었는지 구분하기 위해 사용함 
-  -키는 같은 엘리먼트 사이에서만 고유한 값이면 됨
+   -키는 같은 엘리먼트 사이에서만 고유한 값이면 됨
 
-4. 제어 컴포넌트 
-   제어 컴포넌트는 사용자가 입력한 값에 접근하고 제어할 수 있도록 해주는 컴포넌트
 
-5. textarea 태그 / select 태그 
-   -HTML 에서 <textarea> 의 children으로 텍스트가 들어가는 형태 
+3. textarea 태그 / select 태그 
+   -HTML 에서 <textarea> 의 children으로 텍스트가 들어가는 형태
    -리액트에서는 state를 통해 태그의 value라는 attribute를 변경하여 텍스트를 표시 
    -select 태그도 taxtarea와 동일
 
-6. Shared State 
+4. Shared State 
    -shared state는 공유된 state를 의미 
    -어떤 컴포넌트의 state에 있는 데이터를 여러 개의 하위 컴포넌트에서 공통적으로 사용하는 경우 
-   -하위 컴포넌트가 공통된 부모 컴포넌트의 state를 공유하여 사용하는 것을 shared state라고 한다.
+   -하위 컴포넌트가 공통된 부모 컴포넌트의 state를 공유하여 사용하는 것을 shared state라고 함
 
-7. Calculator 컴포넌트 변경하기 
+5. Calculator 컴포넌트 변경하기 
    -상위 컴포넌트인 Calculator에서 온도 값가 단위를 각각 state를 가지고 있음 
    -두 개의 하위 컴포넌트는 섭씨와 화씨로 변환된 온도 값을 업데이트하기 위한 props로 가지고 있음 
    -이처럼 공통된 상위 컴포넌트로 올려서 공유하는 방법을 사용하면 더욱 간결하고 효율적
