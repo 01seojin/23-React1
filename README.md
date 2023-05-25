@@ -1,6 +1,121 @@
 23-react1 최서진
 ===============================================
 
+2023년 5월 18일 (12주차)
+
+1. 컨텍스트 API
+
+   (1)React.createContext 
+      -컨텍스트를 생성하기 위한 함수 -파라메타에는 기본값 삽입 
+      -하위 컴포넌트는 가장 가까운 상위 레벨의 Provider부터 컨텍스트를 받게 되지만, 만일 Provider를 찾을 수 없다면 위에서 설장한 기본값을 사용하게 됨
+
+   (2)Context.Provider 
+      -Context.Provider 컴포넌트르 하위 컴포넌트를 감싸주면 모든 하위 컴포넌트들이 해당 컨텍스트에 접근 가능 
+      -하위 컴포넌트를 consumer 컴포넌트라 부름
+
+   (3)Class.contextType 
+      -Provider 하위에 있는 클래스 컴포넌트에서 컨텍스트의 데이터에 접근하기 위해 사용 
+      -Class 컴포넌트는 더 이상 사용하지 않음
+
+   (4)Context.Consumer 
+      -함수형 컴포넌트에서 Context.Consumer를 사용하여 컨텍스트를 구독 
+      -컴포넌트의 자식으로 함수가 올 수 있는데 이것을 function as a child 라고 함
+
+   (5)Context.displayName 
+      -컨텍스트 객체는 displayName이라는 문자열 속성을 갖음
+
+
+2. 컨텍스트를 사용하기 전에 고려할 점
+
+   -컨텍스트는 다른 레벨의 많은 컴포넌트가 특정 데이터를 필요로 하는경우에 사용 
+   -컨텍스트를 사용하는 것이 무조건 좋은 것X (컴포넌트와 컨텍스트가 연동되면 재사용성이 떨어지기 때문) 
+   -데이터가 많아질수록 상위 컴포넌트는 복잡 
+   -컨텍스트를 사용하려면 컴포넌트의 상위 컴포넌트에서 Provider로 감싸주어야 함
+
+
+3. 컨텍스트란?
+
+   -기존의 일반적인 리액트에서는 데이터가 컴포넌트의 props를 통해 부모에서 자식을 단방향 전달 
+   -컨텍스트는 리액트 컴포넌트들 사이에서 데이터를 기존의 props를 통해 전달하는 방식 대신 컴포넌트 트리를 통해 곧바로 컴포넌트에 전달하는 새로운 방식을 제공 
+   -컨텍스트를 사용하면 일일이 props로 전달할 필요 없이 데이터를 필요로 하는 컴포넌트에 바로 전달 가능
+
+
+===============================================
+
+
+2023년 5월 11일 (11주차)
+
+
+Calculator.jsx import React, { useState} from "react"; 
+import TemperatureInput from "./TemperatureInput";
+
+function BoilingVerdict(props) { if(props.celsius >= 100) { return
+
+물이 끓습니다.
+
+}
+return <p>물이 끓지 않습니다.</p>
+}
+
+function toCelsius(fahrenheit) { return((fahrenheit - 32) * 5) / 9 ; }
+
+function toFahrenheit(celsius) { return (celsius * 9 ) / 5 + 32; }
+
+function tryConvert(temperature, convert) { const input = parseFloat(temperature); 
+if(Number.isNaN(input)) { return "" } const output = convert(input); 
+const rounded = Math.round(output * 1000) / 1000; return rounded.toString(); }
+
+function Calculator(props) { const [temperature, setTemperature] = useState("");
+const [scale, setScale] = useState("c");
+
+const handleCelsiusChange = (temperature) => {
+    setTemperature(temperature);
+    setScale("c");
+};
+
+const handleFahrenheitChange = (temperature) => {
+    setTemperature(temperature);
+    setScale("f");
+};
+
+const celsius = 
+    scale === "f" ? tryConvert(temperature, toCelsius) : temperature;
+    const fahrenheit = 
+    scale === "c" ? tryConvert(temperature, toFahrenheit) : temperature;    
+
+    return (
+        <div>
+                <TemperatureInput
+                scale="c"
+                temperature={celsius}
+                onTemperatureChange={handleCelsiusChange}
+                />
+                <TemperatureInput
+                scale="f"
+                temperature={fahrenheit}
+                onTemperatureChange={handleFahrenheitChange}
+                />
+                <BoilingVerdict celsius={parseFloat(celsius)}/>
+        </div>
+    );
+}
+
+export default Calculator; 
+TemperatureInput.jsx const scaleNames = { c: "섭씨", f: "화씨", };
+
+function TemperatureInput(props) { const handleChange = (event) => { props.onTemperatureChange(event.target.value) };
+
+return (
+
+온도를 입력해주세요.(단위: {scaleNames[props.scale]});
+);
+}
+
+export default TemperatureInput;
+
+
+===============================================
+
 
 2023년 5월 4일 (10주차)
 
